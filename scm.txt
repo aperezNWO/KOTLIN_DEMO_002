@@ -5,3 +5,20 @@ git commit -m "first commit"
 git branch -M main
 git remote add origin https://github.com/aperezNWO/KOTLIN_DEMO.git
 git push -u origin main
+
+
+SPRING CLI
+
+# Install Spring Boot CLI if you don't have it, or just use curl:
+curl https://start.spring.io/starter.tgz \
+  -d type=gradle-project \
+  -d language=kotlin \
+  -d bootVersion=3.3.4 \
+  -d groupId=com.example \
+  -d artifactId=ping-api \
+  -d name=ping-api \
+  -d description="Zero KB ping api" \
+  -d packageName=com.example.pingapi \
+  -d dependencies=web \
+  -d javaVersion=21 | tar -xzvf -
+  
