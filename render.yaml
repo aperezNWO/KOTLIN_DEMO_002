@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ping-api
+    runtime: docker
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+
+    envVars:
+      - key: SERVER_PORT
+        sync: false   # Render sets this automatically at runtime
+
+    healthCheckPath: /ping
+    autoDeploy: true

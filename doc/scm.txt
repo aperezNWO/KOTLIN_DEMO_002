@@ -1,3 +1,5 @@
+# Init git repo
+
 echo "# KOTLIN_DEMO" >> README.md
 git init
 git add README.md
@@ -6,8 +8,6 @@ git branch -M main
 git remote add origin https://github.com/aperezNWO/KOTLIN_DEMO.git
 git push -u origin main
 
-
-SPRING CLI
 
 # Install Spring Boot CLI if you don't have it, or just use curl:
 curl https://start.spring.io/starter.tgz \
@@ -21,4 +21,26 @@ curl https://start.spring.io/starter.tgz \
   -d packageName=com.example.pingapi \
   -d dependencies=web \
   -d javaVersion=21 | tar -xzvf -
-  
+
+gradlew.bat bootRun
+curl -i http://localhost:8080/ping
+
+
+
+¤ build docker image
+docker build -t ping-api .
+docker tag ping-api apereznwogmail/ping-api:latest
+docker login 
+docker push apereznwogmail/ping-api:latest
+
+¤ check docker hub
+https://hub.docker.com/repositories/apereznwogmail
+
+¤ creaete render web service
+docker.io/apereznwogmail/ping-api:latest
+https://ping-api-latest.onrender.com
+curl.exe -i https://ping-api-latest.onrender.com/ping
+
+¤ creaete cron-job to override render free account delay behaviour
+
+https://ping-api-latest.onrender.com
