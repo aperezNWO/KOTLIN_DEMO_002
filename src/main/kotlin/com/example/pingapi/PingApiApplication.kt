@@ -1,14 +1,14 @@
 package com.example.pingapi
 
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import com.example.pingapi.FractalEngine.Bounds
 import com.example.pingapi.FractalEngine.FractalKind
 import com.example.pingapi.FractalEngine.FractalPoint
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
 
 @SpringBootApplication
 class PingApiApplication
@@ -91,3 +91,37 @@ class FractalController {
         return ResponseEntity.ok(points)
     }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DIJKSTRA
+// ─────────────────────────────────────────────────────────────────────────────
+
+@RestController
+class AlgorithmController {
+
+    /**
+     * Generates a random weighted graph, runs Dijkstra from vertex 0,
+     * and returns the serialised result consumed by the Angular front-end.
+     *
+     * Output format (■-separated sections):
+     *   vertices ■ adjacency-matrix ■ dijkstra-path-list
+     *
+     * Example:
+     *   GET /GenerateRandomVertex_SpringBoot
+     */
+    @GetMapping("/GenerateRandomVertex_SpringBoot")
+    fun generateRandomVertex(): String {
+        val vertexSize   = 9
+        val sampleSize   = 23
+        val sourcePoint  = 0
+        return try {
+            AlgorithmManager.generateRandomPoints(vertexSize, sampleSize, sourcePoint)
+        } catch (e: Exception) {
+            e.message ?: "Unknown error"
+        }
+    }
+}
+
+    
+    
+
