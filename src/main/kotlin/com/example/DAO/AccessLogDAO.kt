@@ -1,10 +1,12 @@
-package com.example.DAO
+package com.example.pingapi.DAO
 
-import com.example.entity.AccessLog
-import org.springframework.stereotype.Repository
+import com.example.pingapi.DAO.entity.AccessLog
+
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
+
+import org.springframework.stereotype.Repository
 
 @Repository
 class AccessLogDAO {

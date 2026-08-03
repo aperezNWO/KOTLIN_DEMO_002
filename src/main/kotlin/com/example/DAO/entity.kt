@@ -1,4 +1,4 @@
-package com.example.entity
+package com.example.pingapi.DAO.entity
 
 data class AccessLog(
     val id_column: Long,

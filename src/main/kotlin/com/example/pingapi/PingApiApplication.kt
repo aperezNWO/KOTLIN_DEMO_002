@@ -1,15 +1,16 @@
 package com.example.pingapi
 
-import com.example.DAO.AccessLogDAO
-import com.example.DAO.PersonasDAO
-import com.example.entity.AccessLog
-import com.example.entity.PersonaTable
+import com.example.pingapi.DAO.AccessLogDAO
+import com.example.pingapi.DAO.PersonasDAO
+import com.example.pingapi.DAO.entity.AccessLog
+import com.example.pingapi.DAO.entity.PersonaTable
 import com.example.pingapi.FractalEngine.Bounds
 import com.example.pingapi.FractalEngine.FractalKind
 import com.example.pingapi.FractalEngine.FractalPoint
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -135,11 +136,12 @@ class DataController(
     private val personasDAO: PersonasDAO
 ) {
 
-    @GetMapping("/getAllLogs")
+   @GetMapping("/getAllLogs")
     fun getAllLogs(): ResponseEntity<List<AccessLog>> {
         return try {
             ResponseEntity.ok(accessLogDAO.getAllLogs())
         } catch (e: SQLException) {
+            e.printStackTrace() // <-- Print the exact database error to your terminal
             ResponseEntity.status(500).body(null)
         }
     }
@@ -149,6 +151,7 @@ class DataController(
         return try {
             ResponseEntity.ok(personasDAO.getAllPersons())
         } catch (e: SQLException) {
+            e.printStackTrace() // <-- Print the exact database error to your terminal
             ResponseEntity.status(500).body(null)
         }
     }

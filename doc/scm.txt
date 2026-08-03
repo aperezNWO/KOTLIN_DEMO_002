@@ -113,5 +113,10 @@ curl -i "https://ping-api-latest.onrender.com/api/fractals/generate?kind=3"
 # Dijkstra
 curl -i "https://ping-api-latest.onrender.com/GenerateRandomVertex_SpringBoot"
 
+## GET ALL PERSONS 
+curl -i https://ping-api-latest.onrender.com/api/data/getAllPersons
+
+## GET ALL LOGS 
+curl -i https://ping-api-latest.onrender.com/api/data/getAllLogs
 
 ///////////////////////////////////////////////////////////
