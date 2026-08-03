@@ -88,6 +88,12 @@ curl -i "http://localhost:8080/api/fractals/generate?kind=3"
 ## DIJKSTRA
 curl -i http://localhost:8080/GenerateRandomVertex_SpringBoot
 
+## GET ALL PERSONS 
+curl -i http://localhost:8080/api/data/getAllPersons
+
+## GET ALL LOGS 
+curl -i http://localhost:8080/api/data/getAllLogs
+
 ####################################################################
 ## REMOTE TESTING
 ####################################################################
