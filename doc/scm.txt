@@ -12,6 +12,16 @@ git branch -M main
 git remote add origin https://github.com/aperezNWO/KOTLIN_DEMO.git
 git push -u origin main
 
+C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot\bin\
+
+"CANNOT LOCATE JAVA INSTALLATION IN SPECIFIED JDKHOME"
+C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot
+¿Do you want to use the default version?
+
+(powershell)
+$env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot"
+echo $env:JAVA_HOME
+java -version
 
 #¤ Install Spring Boot CLI if you don't have it, or just use curl:
 curl https://start.spring.io/starter.tgz \
