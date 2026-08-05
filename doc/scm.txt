@@ -21,6 +21,11 @@ C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot
 (powershell)
 $env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot"
 echo $env:JAVA_HOME
+
+
+$env:JDK_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot"
+echo $env:JDK_HOME
+
 java -version
 
 #¤ Install Spring Boot CLI if you don't have it, or just use curl:
@@ -36,10 +41,11 @@ curl https://start.spring.io/starter.tgz \
   -d dependencies=web \
   -d javaVersion=21 | tar -xzvf -
 
-¤¤ run locally
+¤¤ run locally (command prompt)
 gradlew.bat bootRun
-curl -i http://localhost:8080/ping
-
+curl -i http://localhost:8085/ping
+curl -i http://localhost:8085/api/data/getAllPersons 
+curl -i http://localhost:8085/api/data/getAllLogs 
 
 ¤¤ build docker image
   ¤¤ install / init docker desktop 
