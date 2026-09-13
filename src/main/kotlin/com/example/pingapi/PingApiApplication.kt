@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.boot.SpringBootVersion
 import java.sql.SQLException
 
 @SpringBootApplication
@@ -38,6 +39,35 @@ class PingController {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// SYSTEM VERSION
+// ─────────────────────────────────────────────────────────────────────────────
+
+@RestController
+@RequestMapping("/api/system")
+class SystemController {
+
+    @GetMapping("/language-version")
+    fun getKotlinVersion(): ResponseEntity<Map<String, String>> {
+        return ResponseEntity.ok(
+            mapOf(
+                "language" to "Kotlin",
+                "version" to KotlinVersion.CURRENT.toString()
+            )
+        )
+    }
+
+    @GetMapping("/server-version")
+    fun getSpringBootVersion(): ResponseEntity<Map<String, String>> {
+        return ResponseEntity.ok(
+            mapOf(
+                "server" to "Spring Boot",
+                "version" to (SpringBootVersion.getVersion() ?: "unknown")
+            )
+        )
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // FRACTALS
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -49,24 +79,6 @@ class FractalController {
     /**
      * Generates a fractal and returns a JSON point array consumed by the
      * Angular _fetchAndRender pipeline.
-     *
-     * Parameters
-     * ──────────
-     * kind          — 1=Mandelbrot  2=Julia  3=Barnsley Fern
-     * xMin/xMax     — complex-plane Re bounds of the current view window.
-     * yMin/yMax     — complex-plane Im bounds of the current view window.
-     *                 Sent directly by Angular's applyZoomToBounds(). Falls
-     *                 back to each fractal's default view when omitted.
-     * maxIterations — escape-time iteration ceiling (default 500).
-     *                 Ignored for Barnsley Fern (kind=3).
-     *
-     * Examples
-     * ────────
-     * Default unzoomed Mandelbrot:
-     *   /api/fractals/generate?kind=1
-     *
-     * Zoomed Julia view:
-     *   /api/fractals/generate?kind=2&xMin=-0.7&xMax=0.3&yMin=-0.2&yMax=0.8&maxIterations=500
      */
     @GetMapping("/api/fractals/generate")
     fun getFractal(
@@ -80,8 +92,6 @@ class FractalController {
 
         val fractalKind = FractalKind.fromValue(kind)
 
-        // Default bounds per fractal type — must match Angular's
-        // DEFAULT_BOUNDS_MANDELBROT / DEFAULT_BOUNDS_JULIA constants.
         val defaultBounds = if (fractalKind == FractalKind.MANDELBROT)
             Bounds(-2.0, 1.0, -1.2, 1.2)
         else
@@ -106,16 +116,6 @@ class FractalController {
 @RestController
 class AlgorithmController {
 
-    /**
-     * Generates a random weighted graph, runs Dijkstra from vertex 0,
-     * and returns the serialised result consumed by the Angular front-end.
-     *
-     * Output format (■-separated sections):
-     *   vertices ■ adjacency-matrix ■ dijkstra-path-list
-     *
-     * Example:
-     *   GET /GenerateRandomVertex_SpringBoot
-     */
     @GetMapping("/GenerateRandomVertex_SpringBoot")
     fun generateRandomVertex(): String {
         val vertexSize   = 9
@@ -141,7 +141,7 @@ class DataController(
         return try {
             ResponseEntity.ok(accessLogDAO.getAllLogs())
         } catch (e: SQLException) {
-            e.printStackTrace() // <-- Print the exact database error to your terminal
+            e.printStackTrace() 
             ResponseEntity.status(500).body(null)
         }
     }
@@ -151,10 +151,8 @@ class DataController(
         return try {
             ResponseEntity.ok(personasDAO.getAllPersons())
         } catch (e: SQLException) {
-            e.printStackTrace() // <-- Print the exact database error to your terminal
+            e.printStackTrace() 
             ResponseEntity.status(500).body(null)
         }
     }
-}    
-    
-
+}

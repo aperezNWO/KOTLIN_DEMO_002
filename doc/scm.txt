@@ -1,6 +1,10 @@
 ////////////////////////////////////////////////////////////////
 // SCM
-////////////////////////////////////////////////////////////////]
+////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////
+// GIT
+///////////////////////////////////////////////////////////
 
 # Init git repo
 
@@ -12,6 +16,14 @@ git branch -M main
 git remote add origin https://github.com/aperezNWO/KOTLIN_DEMO.git
 git push -u origin main
 
+///////////////////////////////////////////////////////////
+// INSTALL SDK
+///////////////////////////////////////////////////////////
+
+## JAVA
+
+winget install -e --id EclipseAdoptium.Temurin.21.JDK
+
 C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot\bin\
 
 "CANNOT LOCATE JAVA INSTALLATION IN SPECIFIED JDKHOME"
@@ -21,10 +33,6 @@ C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot
 (powershell)
 $env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot"
 echo $env:JAVA_HOME
-
-
-$env:JDK_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot"
-echo $env:JDK_HOME
 
 java -version
 
@@ -41,48 +49,12 @@ curl https://start.spring.io/starter.tgz \
   -d dependencies=web \
   -d javaVersion=21 | tar -xzvf -
 
-¤¤ run locally (command prompt)
-gradlew.bat bootRun
-curl -i http://localhost:8085/ping
-curl -i http://localhost:8085/api/data/getAllPersons 
-curl -i http://localhost:8085/api/data/getAllLogs 
-
-¤¤ build docker image
-  ¤¤ install / init docker desktop 
-  ¤¤ allow visual studio code extensions
-  ¤¤ create Dockerfile
-  ¤¤ create render.yaml
-
-# 0. in case required go to docker hub to get a key
-docker login 
-
-# 1. Rebuild the image with your changes
-docker build -t ping-api .
-
-# 2. Tag it (same command as before)
-docker tag ping-api apereznwogmail/ping-api:latest
-
-# 3. Push to Docker Hub (no need to login again unless session expired)
-docker push apereznwogmail/ping-api:latest
-
-¤¤ check docker hub
-https://hub.docker.com/repositories/apereznwogmail
-
-¤¤ creaete render web service
-docker.io/apereznwogmail/ping-api:latest
-https://ping-api-latest.onrender.com
-curl.exe -i https://ping-api-latest.onrender.com/ping
-
-¤¤ create cron-job to override render free account delay behaviour
-
-https://ping-api-latest.onrender.com
-
 
 ///////////////////////////////////////////////////////////
+// BUILD APP
+///////////////////////////////////////////////////////////
 
-## TESTING END POINTS 
-
-## run server   
+¤¤ run locally (Java SE terminal - Vstudio Code) 
 gradlew.bat bootRun
 gradlew.bat clean bootRun
 
@@ -90,7 +62,7 @@ gradlew.bat clean bootRun
 ## LOCAL TESTING
 ####################################################################
 
-# Ping endpoint (other window)
+# Ping endpoint (git bash or cmd)
 curl -i http://localhost:8085/ping
 
 # Mandelbrot (default bounds)
@@ -111,7 +83,69 @@ curl -i http://localhost:8085/api/data/getAllPersons
 ## GET ALL LOGS 
 curl -i http://localhost:8085/api/data/getAllLogs
 
-####################################################################
+## KOTLIN VERSION
+curl -i  http://localhost:8085/api/system/language-version
+
+  HTTP/1.1 200 
+  Vary: Origin
+  Vary: Access-Control-Request-Method
+  Vary: Access-Control-Request-Headers
+  Content-Type: application/json
+  Transfer-Encoding: chunked
+  Date: Sun, 13 Sep 2026 05:28:58 GMT
+
+  {"language":"Kotlin","version":"2.3.21"}
+
+## SPRING BOOT VERSION
+curl -i  http://localhost:8085/api/system/server-version
+
+  HTTP/1.1 200 
+  Vary: Origin
+  Vary: Access-Control-Request-Method
+  Vary: Access-Control-Request-Headers
+  Content-Type: application/json
+  Transfer-Encoding: chunked
+  Date: Sun, 13 Sep 2026 05:31:13 GMT
+
+  {"server":"Spring Boot","version":"4.1.0"}
+
+///////////////////////////////////////////////////////////
+// DOCKER
+///////////////////////////////////////////////////////////
+
+¤¤ build docker image
+  ¤¤ install / init docker desktop 
+  ¤¤ allow visual studio code extensions
+  ¤¤ create Dockerfile
+  ¤¤ create render.yaml
+  ¤¤ INIT DOCKER DESKTOP
+
+# 0. in case required go to docker hub to get a key
+docker login 
+
+# 1. Rebuild the image with your changes
+docker build -t ping-api .
+
+# 2. Tag it (same command as before)
+docker tag ping-api apereznwogmail/ping-api:latest
+
+# 3. Push to Docker Hub (no need to login again unless session expired)
+docker push apereznwogmail/ping-api:latest
+
+¤¤ check docker hub
+https://hub.docker.com/repositories/apereznwogmail
+
+//////////////////////////////////////////////////////////
+// REMOTE SETUP
+///////////////////////////////////////////////////////////
+
+¤¤ creaete render web service
+docker.io/apereznwogmail/ping-api:latest
+
+## RENDER -- INSTALL LATEST REFERENCE
+https://ping-api-latest.onrender.com
+
+###################################################################
 ## REMOTE TESTING
 ####################################################################
 
@@ -135,5 +169,23 @@ curl -i https://ping-api-latest.onrender.com/api/data/getAllPersons
 
 ## GET ALL LOGS 
 curl -i https://ping-api-latest.onrender.com/api/data/getAllLogs
+
+## KOTLIN VERSION
+curl -i https://ping-api-latest.onrender.com/api/system/language-version
+{"language":"Kotlin","version":"2.3.21"}
+
+## SPRING BOOT VERSION
+curl -i https://ping-api-latest.onrender.com/api/system/server-version
+{"server":"Spring Boot","version":"4.1.0"}
+
+///////////////////////////////////////////////////////////
+## create cron-job to override render free account delay behaviour
+///////////////////////////////////////////////////////////
+
+https://ping-api-latest.onrender.com
+
+///////////////////////////////////////////////////////////
+// SAVE GIT CHANGES
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
