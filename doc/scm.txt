@@ -31,9 +31,8 @@ C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot
 ¿Do you want to use the default version?
 
 (powershell)
-$env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot"
+$env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"
 echo $env:JAVA_HOME
-
 java -version
 
 #¤ Install Spring Boot CLI if you don't have it, or just use curl:
@@ -54,16 +53,27 @@ curl https://start.spring.io/starter.tgz \
 // BUILD APP
 ///////////////////////////////////////////////////////////
 
-¤¤ run locally (Java SE terminal - Vstudio Code) 
-gradlew.bat bootRun
-gradlew.bat clean bootRun
+## CHECK JAVA VERSION
+    $env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"
+    echo $env:JAVA_HOME
+    java -version
+
+
+¤¤ run locally (Java SE terminal - Vstudio Code)
+    ¤¤ cmd (Windows)
+    gradlew.bat bootRun
+    gradlew.bat clean bootRun
+
+    ## powershell
+    .\gradlew.batbootRun
+    .\gradlew.bat clean bootRun
 
 ####################################################################
 ## LOCAL TESTING
 ####################################################################
 
 # Ping endpoint (git bash or cmd)
-curl -i http://localhost:8085/ping
+curl.exe -i http://localhost:8085/ping
 
 # Mandelbrot (default bounds)
 curl -i "http://localhost:8085/api/fractals/generate?kind=1"
@@ -77,16 +87,16 @@ curl -i "http://localhost:8085/api/fractals/generate?kind=3"
 ## DIJKSTRA
 curl -i http://localhost:8085/GenerateRandomVertex_SpringBoot
 
-## GET ALL PERSONS 
+## GET ALL PERSONS
 curl -i http://localhost:8085/api/data/getAllPersons
 
-## GET ALL LOGS 
+## GET ALL LOGS
 curl -i http://localhost:8085/api/data/getAllLogs
 
 ## KOTLIN VERSION
 curl -i  http://localhost:8085/api/system/language-version
 
-  HTTP/1.1 200 
+  HTTP/1.1 200
   Vary: Origin
   Vary: Access-Control-Request-Method
   Vary: Access-Control-Request-Headers
@@ -99,7 +109,7 @@ curl -i  http://localhost:8085/api/system/language-version
 ## SPRING BOOT VERSION
 curl -i  http://localhost:8085/api/system/server-version
 
-  HTTP/1.1 200 
+  HTTP/1.1 200
   Vary: Origin
   Vary: Access-Control-Request-Method
   Vary: Access-Control-Request-Headers
@@ -114,14 +124,14 @@ curl -i  http://localhost:8085/api/system/server-version
 ///////////////////////////////////////////////////////////
 
 ¤¤ build docker image
-  ¤¤ install / init docker desktop 
+  ¤¤ install / init docker desktop
   ¤¤ allow visual studio code extensions
   ¤¤ create Dockerfile
   ¤¤ create render.yaml
   ¤¤ INIT DOCKER DESKTOP
 
 # 0. in case required go to docker hub to get a key
-docker login 
+docker login
 
 # 1. Rebuild the image with your changes
 docker build -t ping-api .
@@ -164,10 +174,10 @@ curl -i "https://ping-api-latest.onrender.com/api/fractals/generate?kind=3"
 # Dijkstra
 curl -i "https://ping-api-latest.onrender.com/GenerateRandomVertex_SpringBoot"
 
-## GET ALL PERSONS 
+## GET ALL PERSONS
 curl -i https://ping-api-latest.onrender.com/api/data/getAllPersons
 
-## GET ALL LOGS 
+## GET ALL LOGS
 curl -i https://ping-api-latest.onrender.com/api/data/getAllLogs
 
 ## KOTLIN VERSION
