@@ -68,6 +68,8 @@ curl https://start.spring.io/starter.tgz \
     .\gradlew.batbootRun
     .\gradlew.bat clean bootRun
 
+    .\gradlew.bat bootJar -x test
+
 ####################################################################
 ## LOCAL TESTING
 ####################################################################
@@ -76,25 +78,28 @@ curl https://start.spring.io/starter.tgz \
 curl.exe -i http://localhost:8085/ping
 
 # Mandelbrot (default bounds)
-curl -i "http://localhost:8085/api/fractals/generate?kind=1"
+curl.exe -i "http://localhost:8085/api/fractals/generate?kind=1"
 
 # Julia with custom bounds
-curl -i "http://localhost:8085/api/fractals/generate?kind=2&xMin=-1.5&xMax=1.5&yMin=-1.5&yMax=1.5&maxIterations=500"
+curl.exe -i "http://localhost:8085/api/fractals/generate?kind=2&xMin=-1.5&xMax=1.5&yMin=-1.5&yMax=1.5&maxIterations=500"
 
 # Barnsley Fern
-curl -i "http://localhost:8085/api/fractals/generate?kind=3"
+curl.exe -i "http://localhost:8085/api/fractals/generate?kind=3"
+
+## Golden Ratio Fractal
+curl.exe -i "http://localhost:8085/api/fractals/generate?kind=4&xMin=-2.0&xMax=1.0&yMin=-1.2&yMax=1.2&maxIterations=500"
 
 ## DIJKSTRA
-curl -i http://localhost:8085/GenerateRandomVertex_SpringBoot
+curl.exe -i http://localhost:8085/GenerateRandomVertex_SpringBoot
 
 ## GET ALL PERSONS
-curl -i http://localhost:8085/api/data/getAllPersons
+curl.exe -i http://localhost:8085/api/data/getAllPersons
 
 ## GET ALL LOGS
-curl -i http://localhost:8085/api/data/getAllLogs
+curl.exe -i http://localhost:8085/api/data/getAllLogs
 
 ## KOTLIN VERSION
-curl -i  http://localhost:8085/api/system/language-version
+curl.exe -i  http://localhost:8085/api/system/language-version
 
   HTTP/1.1 200
   Vary: Origin
@@ -107,7 +112,7 @@ curl -i  http://localhost:8085/api/system/language-version
   {"language":"Kotlin","version":"2.3.21"}
 
 ## SPRING BOOT VERSION
-curl -i  http://localhost:8085/api/system/server-version
+curl.exe -i  http://localhost:8085/api/system/server-version
 
   HTTP/1.1 200
   Vary: Origin
@@ -160,32 +165,35 @@ https://ping-api-latest.onrender.com
 ####################################################################
 
 # Ping endpoint (other window)
-curl -i https://ping-api-latest.onrender.com/ping
+curl.exe -i https://ping-api-latest-ii19.onrender.com/ping
 
 # Mandelbrot (default bounds)
-curl -i "https://ping-api-latest.onrender.com/api/fractals/generate?kind=1"
+curl.exe -i "https://ping-api-latest-ii19.onrender.com/api/fractals/generate?kind=1"
 
 # Julia with custom bounds
-curl -i "https://ping-api-latest.onrender.com/api/fractals/generate?kind=2&xMin=-1.5&xMax=1.5&yMin=-1.5&yMax=1.5&maxIterations=500"
+curl.exe -i "https://ping-api-latest-ii19.onrender.com/api/fractals/generate?kind=2&xMin=-1.5&xMax=1.5&yMin=-1.5&yMax=1.5&maxIterations=500"
 
 # Barnsley Fern
-curl -i "https://ping-api-latest.onrender.com/api/fractals/generate?kind=3"
+curl.exe -i "https://ping-api-latest-ii19.onrender.com/api/fractals/generate?kind=3"
+
+# GOLDEN RATIO FRACTAL
+curl.exe -i "https://ping-api-latest-ii19.onrender.com/api/fractals/generate?kind=4&xMin=-2.0&xMax=1.0&yMin=-1.2&yMax=1.2&maxIterations=500"
 
 # Dijkstra
 curl -i "https://ping-api-latest.onrender.com/GenerateRandomVertex_SpringBoot"
 
 ## GET ALL PERSONS
-curl -i https://ping-api-latest.onrender.com/api/data/getAllPersons
+curl.exe -i https://ping-api-latest.onrender.com/api/data/getAllPersons
 
 ## GET ALL LOGS
-curl -i https://ping-api-latest.onrender.com/api/data/getAllLogs
+curl.exe -i https://ping-api-latest.onrender.com/api/data/getAllLogs
 
 ## KOTLIN VERSION
-curl -i https://ping-api-latest.onrender.com/api/system/language-version
+curl.exe -i https://ping-api-latest.onrender.com/api/system/language-version
 {"language":"Kotlin","version":"2.3.21"}
 
 ## SPRING BOOT VERSION
-curl -i https://ping-api-latest.onrender.com/api/system/server-version
+curl.exe  -i https://ping-api-latest.onrender.com/api/system/server-version
 {"server":"Spring Boot","version":"4.1.0"}
 
 ///////////////////////////////////////////////////////////

@@ -34,7 +34,7 @@ class PingController {
 
     @GetMapping("/ping")
     fun ping(): ResponseEntity<Void> {
-        return ResponseEntity.noContent().build() // 204 — 0 bytes
+        return ResponseEntity.noContent().build()
     }
 }
 
@@ -92,10 +92,12 @@ class FractalController {
 
         val fractalKind = FractalKind.fromValue(kind)
 
-        val defaultBounds = if (fractalKind == FractalKind.MANDELBROT)
-            Bounds(-2.0, 1.0, -1.2, 1.2)
-        else
-            Bounds(-1.5, 1.5, -1.5, 1.5)
+        // Configures appropriate default bounds depending on the requested fractal kind
+        val defaultBounds = when (fractalKind) {
+            FractalKind.MANDELBROT   -> Bounds(-2.0, 1.0, -1.2, 1.2)
+            FractalKind.GOLDEN_RATIO -> Bounds(-2.0, 1.0, -1.2, 1.2)
+            else                     -> Bounds(-1.5, 1.5, -1.5, 1.5)
+        }
 
         val bounds = if (xMin != null && xMax != null && yMin != null && yMax != null)
             Bounds(xMin, xMax, yMin, yMax)
@@ -136,12 +138,12 @@ class DataController(
     private val personasDAO: PersonasDAO
 ) {
 
-   @GetMapping("/getAllLogs")
+    @GetMapping("/getAllLogs")
     fun getAllLogs(): ResponseEntity<List<AccessLog>> {
         return try {
             ResponseEntity.ok(accessLogDAO.getAllLogs())
         } catch (e: SQLException) {
-            e.printStackTrace() 
+            e.printStackTrace()
             ResponseEntity.status(500).body(null)
         }
     }
@@ -151,7 +153,7 @@ class DataController(
         return try {
             ResponseEntity.ok(personasDAO.getAllPersons())
         } catch (e: SQLException) {
-            e.printStackTrace() 
+            e.printStackTrace()
             ResponseEntity.status(500).body(null)
         }
     }
