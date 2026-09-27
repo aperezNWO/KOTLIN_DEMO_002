@@ -61,12 +61,19 @@ curl https://start.spring.io/starter.tgz \
 
 ¤¤ run locally (Java SE terminal - Vstudio Code)
     ¤¤ cmd (Windows)
+    $env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"
+    echo $env:JAVA_HOME
+    java -version
     gradlew.bat bootRun
     gradlew.bat clean bootRun
 
     ## powershell
-    .\gradlew.batbootRun
+    $env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"
+    echo $env:JAVA_HOME
+    java -version
     .\gradlew.bat clean bootRun
+
+    .\gradlew.batbootRun
 
     .\gradlew.bat bootJar -x test
 

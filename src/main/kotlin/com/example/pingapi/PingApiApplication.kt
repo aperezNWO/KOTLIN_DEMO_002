@@ -95,7 +95,7 @@ class FractalController {
         // Configures appropriate default bounds depending on the requested fractal kind
         val defaultBounds = when (fractalKind) {
             FractalKind.MANDELBROT   -> Bounds(-2.0, 1.0, -1.2, 1.2)
-            FractalKind.GOLDEN_RATIO -> Bounds(-2.0, 1.0, -1.2, 1.2)
+            FractalKind.GOLDEN_RATIO -> Bounds(-1.5, 1.5, -1.5, 1.5)  // was reusing Mandelbrot's window
             else                     -> Bounds(-1.5, 1.5, -1.5, 1.5)
         }
 

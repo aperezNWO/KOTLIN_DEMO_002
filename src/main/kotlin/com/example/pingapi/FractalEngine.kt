@@ -129,41 +129,124 @@ class FractalEngine {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // GOLDEN RATIO FRACTAL
+    // GOLDEN RATIO / NAUTILUS — field-scan version
+    //
+    // Instead of tracing a spiral, we scan every screen pixel and evaluate an
+    // implicit "shell field" that combines:
+    //
+    //   • a logarithmic-spiral phase   φ = θ - ln(r)/b
+    //   • chamber bands drawn IN THAT PHASE (so they curve along the spiral,
+    //     not radially)
+    //   • a tube envelope that peaks near the spiral arms
+    //   • a radial fade
+    //
+    // This is the same trick fractal-art tools use for shell-shaped formulas,
+    // and it produces chambers, ribs, and an eye — not concentric rings.
     // ─────────────────────────────────────────────────────────────────────────
 
-    /**
-     * Generates the Golden Ratio Fractal on a CANVAS_WIDTH × CANVAS_HEIGHT grid.
-     * Formula: z(n+1) = z(n)² + c - (1 / φ), where φ is the golden ratio.
-     */
     fun generateGoldenRatio(bounds: Bounds, maxIterations: Int): List<FractalPoint> {
         val points = mutableListOf<FractalPoint>()
-        val xRange = bounds.xMax - bounds.xMin
-        val yRange = bounds.yMax - bounds.yMin
 
-        // Golden ratio phi = (1 + sqrt(5)) / 2
-        val phi = (1.0 + kotlin.math.sqrt(5.0)) / 2.0
-        val phiOffset = 1.0 / phi
+        val xRange  = bounds.xMax - bounds.xMin
+        val yRange  = bounds.yMax - bounds.yMin
+        val centerX = (bounds.xMin + bounds.xMax) / 2.0
+        val centerY = (bounds.yMin + bounds.yMax) / 2.0
+        val viewportScale = kotlin.math.min(xRange, yRange)
 
-        for (screenY in 0 until CANVAS_HEIGHT) {
-            for (screenX in 0 until CANVAS_WIDTH) {
+        // ── Nautilus constants ───────────────────────────────────────────────
+        val PHI        = (1.0 + kotlin.math.sqrt(5.0)) / 2.0
+        val growthRate = kotlin.math.ln(PHI) / (2.0 * Math.PI)   // ≈ 0.0766
 
-                val cRe = bounds.xMin + (screenX * xRange / CANVAS_WIDTH)
-                val cIm = bounds.yMin + (screenY * yRange / CANVAS_HEIGHT)
+        val maxRadius = viewportScale * 0.47
+        val r0        = maxRadius / Math.pow(PHI, 4.0)           // ~4 turns visible
 
-                var zRe = 0.0
-                var zIm = 0.0
-                var iter = 0
+        // Chamber band count per whorl — 30 chambers per whorl, real nautilus.
+        // Because bands are curved along the spiral, we can afford 30 without
+        // the aliasing that plagued the "emit radial hairs" approach.
+        val chambersPerWhorl = 30.0
 
-                while (zRe * zRe + zIm * zIm <= 4.0 && iter < maxIterations) {
-                    val nextRe = zRe * zRe - zIm * zIm + cRe - phiOffset
-                    val nextIm = 2.0 * zRe * zIm + cIm
-                    zRe = nextRe
-                    zIm = nextIm
-                    iter++
-                }
+        // The number of spiral ARMS. Real nautilus is 1 continuous tube, but
+        // visually the shell reads as several overlapping turns of one tube.
+        // We use ONE arm and rely on the phase term to produce the whorls.
+        // (Higher = more arms = busier shell.)
 
-                points.add(FractalPoint(screenX.toDouble(), screenY.toDouble(), encodeIntensity(iter, maxIterations)))
+        // Rib thickness as a fraction of the whorl pitch. Controls whether
+        // the chambers look "wide" (small value) or "thin" (large value).
+        val ribSharpness = 3.0
+
+        // Radial falloff exponent
+        val fadeStrength = 0.55
+
+        // ── Pixel scan ───────────────────────────────────────────────────────
+        // Two-pixel stride in each axis is enough for a smooth result and 4× faster.
+        // Set to 1 for maximum detail if you don't mind 480k evaluations.
+        val stride = 1
+
+        for (py in 0 until CANVAS_HEIGHT step stride) {
+            for (px in 0 until CANVAS_WIDTH step stride) {
+
+                // Screen → world
+                val wx = bounds.xMin + (px.toDouble() / CANVAS_WIDTH) * xRange
+                val wy = bounds.yMin + (py.toDouble() / CANVAS_HEIGHT) * yRange
+
+                // World → polar about the shell eye
+                val dx = wx - centerX
+                val dy = wy - centerY
+                val r  = kotlin.math.sqrt(dx * dx + dy * dy)
+                if (r < 1e-6 || r > maxRadius) continue
+
+                val theta = kotlin.math.atan2(dy, dx)     // -π .. +π
+
+                // ── Logarithmic-spiral phase ─────────────────────────────────
+                // φ = θ - ln(r)/b
+                // Points on the SAME spiral arm share the same φ (mod 2π).
+                // This is what makes chamber bands curve along the spiral.
+                val phi = theta - kotlin.math.ln(r / r0) / growthRate
+
+                // ── Chamber bands, drawn in φ ────────────────────────────────
+                // sin(chambersPerWhorl * φ) peaks at each chamber wall.
+                // Use |sin| for symmetric ribs, or sin for one-sided blades.
+                val chamberPhase = chambersPerWhorl * phi
+                // We use a sharpened raised cosine so the walls read as
+                // distinct ridges rather than a smooth wave.
+                val chamber = Math.pow(
+                    0.5 + 0.5 * kotlin.math.cos(chamberPhase),
+                    ribSharpness
+                )
+
+                // ── Tube envelope ────────────────────────────────────────────
+                // The tube is thickest at radius r where the spiral arm sits.
+                // Because arms are the locus φ ≡ const, and a pixel is on an arm
+                // when φ is a multiple of 2π/nTurns... actually every φ is on
+                // SOME arm — the envelope here is the radial fade, since the
+                // arm spacing already grows with r in the log-spiral.
+                //
+                // The visible "tube thickness" emerges from the fact that at
+                // each pixel, the strength of its nearest chamber ridge is
+                // controlled by how close φ is to a multiple of 2π/n.
+                // That gives us a natural wall thickness without extra params.
+
+                // ── Radial fade ──────────────────────────────────────────────
+                val tNorm = (r / maxRadius).coerceIn(0.0, 1.0)
+                val radialFade = 1.0 - fadeStrength * tNorm * tNorm
+
+                // ── Combine into intensity ───────────────────────────────────
+                // Body intensity: the shell's overall brightness at this radius
+                val bodyI = 40.0 + 180.0 * radialFade
+
+                // Ridge intensity: chamber walls brighten the pixel
+                val ridgeI = bodyI * (0.35 + 0.65 * chamber)
+
+                // The eye of the shell gets a small brightness boost so it
+                // reads as a "hot spot" like in the reference.
+                val eyeBoost = if (r < r0 * 1.4) {
+                    60.0 * (1.0 - r / (r0 * 1.4))
+                } else 0.0
+
+                val intensity = (ridgeI + eyeBoost).toInt().coerceIn(0, 235)
+                if (intensity < 10) continue       // skip near-black pixels
+
+                points.add(FractalPoint(px.toDouble(), py.toDouble(), intensity))
             }
         }
 
