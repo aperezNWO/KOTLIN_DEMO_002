@@ -10,7 +10,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class RequestLoggingFilter : OncePerRequestFilter() {
 
-    private val logger = LoggerFactory.getLogger(RequestLoggingFilter::class.java)
+    public val logger = LoggerFactory.getLogger(RequestLoggingFilter::class.java)
 
     override fun doFilterInternal(
         request: HttpServletRequest,

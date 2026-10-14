@@ -72,14 +72,17 @@ curl https://start.spring.io/starter.tgz \
     echo $env:JAVA_HOME
     java -version
 
+    .\gradlew.bat check
+
     .\gradlew.bat compileKotlin
 
-    .\gradlew.bat check
+    .\gradlew.bat clean compileKotlin --no-daemon
 
     .\gradlew.bat clean bootRun
 
     .\gradlew.batbootRun
 
+    ## run before docker
     .\gradlew.bat bootJar -x test
 
 ####################################################################
