@@ -71,6 +71,11 @@ curl https://start.spring.io/starter.tgz \
     $env:JAVA_HOME="C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot"
     echo $env:JAVA_HOME
     java -version
+
+    .\gradlew.bat compileKotlin
+
+    .\gradlew.bat check
+
     .\gradlew.bat clean bootRun
 
     .\gradlew.batbootRun

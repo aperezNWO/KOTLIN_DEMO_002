@@ -26,15 +26,72 @@ fun main(args: Array<String>) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// ENDPOINT REGISTRY (Dictionary)
+// ─────────────────────────────────────────────────────────────────────────────
+
+object EndpointRegistry {
+    const val HEALTH             = "/health"
+    const val PING               = "/ping"
+    const val LANGUAGE_VERSION   = "/api/system/language-version"
+    const val SERVER_VERSION     = "/api/system/server-version"
+    const val FRACTAL_GENERATE   = "/api/fractals/generate"
+    const val GET_ALL_LOGS       = "/api/data/getAllLogs"
+    const val GET_ALL_PERSONS    = "/api/data/getAllPersons"
+    const val DIJKSTRA           = "/api/algorithm/GenerateRandomVertex_Kotlin"
+
+    data class EndpointInfo(val key: String, val path: String, val description: String)
+
+    val infoMap = mapOf(
+        "HEALTH_ENDPOINT"         to EndpointInfo("HEALTH_ENDPOINT", HEALTH, "Print all endpoints"),
+        "PING_ENDPOINT"           to EndpointInfo("PING_ENDPOINT", PING, "Ping endpoint"),
+        "LANGUAGE_VERSION_ENDPOINT" to EndpointInfo("LANGUAGE_VERSION_ENDPOINT", LANGUAGE_VERSION, "Get Kotlin Version"),
+        "SERVER_VERSION_ENDPOINT"   to EndpointInfo("SERVER_VERSION_ENDPOINT", SERVER_VERSION, "Get Spring Boot Version"),
+        "FRACTAL_ENDPOINT"        to EndpointInfo("FRACTAL_ENDPOINT", FRACTAL_GENERATE, "Fractal Generation Endpoint"),
+        "DIJKSTRA_ENDPOINT"       to EndpointInfo("DIJKSTRA_ENDPOINT", DIJKSTRA, "Generate Random Vertex via Dijkstra"),
+        "GET_ALL_LOGS_ENDPOINT"   to EndpointInfo("GET_ALL_LOGS_ENDPOINT", GET_ALL_LOGS, "Get All Access Logs"),
+        "GET_ALL_PERSONS_ENDPOINT" to EndpointInfo("GET_ALL_PERSONS_ENDPOINT", GET_ALL_PERSONS, "Get All Persons")
+    )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HEALTH / DIAGNOSTICS CONTROLLER
+// ─────────────────────────────────────────────────────────────────────────────
+
+@RestController
+class HealthController {
+
+    @GetMapping(EndpointRegistry.HEALTH)
+    fun health(): ResponseEntity<Map<String, Any>> {
+        val springVersion = SpringBootVersion.getVersion() ?: "unknown"
+        val serverStatus = "Spring Boot Http Server - v[$springVersion] Working!"
+
+        val endpointsList = EndpointRegistry.infoMap.values.map { info ->
+            mapOf(
+                "key" to info.key,
+                "path" to info.path,
+                "description" to info.description
+            )
+        }
+
+        return ResponseEntity.ok(
+            mapOf(
+                "server" to serverStatus,
+                "endpoints" to endpointsList
+            )
+        )
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // PING
 // ─────────────────────────────────────────────────────────────────────────────
 
 @RestController
 class PingController {
 
-    @GetMapping("/ping")
+    @GetMapping(EndpointRegistry.PING)
     fun ping(): ResponseEntity<Void> {
-        return ResponseEntity.noContent().build()
+        return ResponseEntity.noContent().build() // 204 — 0 bytes
     }
 }
 
@@ -46,6 +103,7 @@ class PingController {
 @RequestMapping("/api/system")
 class SystemController {
 
+    // Note: Mapped relative to /api/system prefix -> resulting path matches EndpointRegistry.LANGUAGE_VERSION
     @GetMapping("/language-version")
     fun getKotlinVersion(): ResponseEntity<Map<String, String>> {
         return ResponseEntity.ok(
@@ -65,6 +123,15 @@ class SystemController {
             )
         )
     }
+
+    @GetMapping("/app-version")
+    fun getSpringBootVersion(): ResponseEntity<Map<String, String>> {
+        return ResponseEntity.ok(
+            mapOf(
+                "appVersion" to "1.0.0"
+            )
+        )
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -78,9 +145,9 @@ class FractalController {
 
     /**
      * Generates a fractal and returns a JSON point array consumed by the
-     * Angular _fetchAndRender pipeline.
+     * Angular _fetchAndRender pipeline[cite: 9].
      */
-    @GetMapping("/api/fractals/generate")
+    @GetMapping(EndpointRegistry.FRACTAL_GENERATE)
     fun getFractal(
         @RequestParam kind: Int,
         @RequestParam(required = false) xMin: Double?,
@@ -92,12 +159,10 @@ class FractalController {
 
         val fractalKind = FractalKind.fromValue(kind)
 
-        // Configures appropriate default bounds depending on the requested fractal kind
-        val defaultBounds = when (fractalKind) {
-            FractalKind.MANDELBROT   -> Bounds(-2.0, 1.0, -1.2, 1.2)
-            FractalKind.GOLDEN_RATIO -> Bounds(-1.5, 1.5, -1.5, 1.5)  // was reusing Mandelbrot's window
-            else                     -> Bounds(-1.5, 1.5, -1.5, 1.5)
-        }
+        val defaultBounds = if (fractalKind == FractalKind.MANDELBROT)
+            Bounds(-2.0, 1.0, -1.2, 1.2)
+        else
+            Bounds(-1.5, 1.5, -1.5, 1.5)
 
         val bounds = if (xMin != null && xMax != null && yMin != null && yMax != null)
             Bounds(xMin, xMax, yMin, yMax)
@@ -118,7 +183,7 @@ class FractalController {
 @RestController
 class AlgorithmController {
 
-    @GetMapping("/GenerateRandomVertex_SpringBoot")
+    @GetMapping(EndpointRegistry.DIJKSTRA)
     fun generateRandomVertex(): String {
         val vertexSize   = 9
         val sampleSize   = 23
