@@ -139,6 +139,9 @@ curl.exe -i  http://localhost:8085/api/system/server-version
 
   {"server":"Spring Boot","version":"4.1.0"}
 
+## APP VERSION
+curl.exe -i  http://localhost:8085/api/system/app-version
+
 ///////////////////////////////////////////////////////////
 // DOCKER
 ///////////////////////////////////////////////////////////
