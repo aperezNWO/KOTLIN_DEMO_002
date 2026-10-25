@@ -154,13 +154,13 @@ curl.exe -i  http://localhost:8085/api/system/server-version
 docker login
 
 # 1. Rebuild the image with your changes
-docker build -t ping-api .
+docker build -t kotlin-demo .
 
 # 2. Tag it (same command as before)
-docker tag ping-api apereznwogmail/ping-api:latest
+docker tag kotlin-demo apereznwogmail/kotlin-demo:latest
 
 # 3. Push to Docker Hub (no need to login again unless session expired)
-docker push apereznwogmail/ping-api:latest
+docker push apereznwogmail/kotlin-demo:latest
 
 ¤¤ check docker hub
 https://hub.docker.com/repositories/apereznwogmail
@@ -220,5 +220,10 @@ https://ping-api-latest.onrender.com
 ///////////////////////////////////////////////////////////
 // SAVE GIT CHANGES
 ///////////////////////////////////////////////////////////
+
+git add *
+git commit -m"[Application KOTLIN_DEMO_002] -v[1.0.1]" -m"docker container change"
+git push
+git pull
 
 ///////////////////////////////////////////////////////////

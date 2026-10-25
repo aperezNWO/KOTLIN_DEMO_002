@@ -126,7 +126,7 @@ class SystemController {
     fun getApplicationVersion(): ResponseEntity<Map<String, String>> {
         return ResponseEntity.ok(
             mapOf(
-                "appVersion" to "1.0.0"
+                "appVersion" to "1.0.1"
             )
         )
     }
